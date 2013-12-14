@@ -248,7 +248,7 @@ There's an alternative which doesn't bother to export the public keys, but it
 
     me@box:~$ gpg --list-secret-keys
     /home/me/.gnupg/secring.gpg
-
+    --------------------------------
     sec   4096R/0xF1829BDBB6B64480 2013-12-14 [expires: 2013-12-13]
     uid                            My Full Name <me@domain.example.com>
     ssb   4096R/0xFDB32668D55D0A12 2013-12-14
@@ -284,7 +284,7 @@ master secret key is not actually present in the secret keyring.
 
     me@box:~$ gpg --list-secret-keys
     /home/me/.gnupg/secring.gpg
-
+    --------------------------------
     sec#  4096R/0xF1829BDBB6B64480 2013-12-14 [expires: 2013-12-13]
     uid                            My Full Name <me@domain.example.com>
     ssb   4096R/0xFDB32668D55D0A12 2013-12-14
