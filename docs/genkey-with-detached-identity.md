@@ -244,6 +244,8 @@ There's an alternative which doesn't bother to export the public keys, but it
 - delete the private master key
 - import the private subkeys
 
+.
+
     me@box:~$ gpg --list-secret-keys
     /home/me/.gnupg/secring.gpg
 
