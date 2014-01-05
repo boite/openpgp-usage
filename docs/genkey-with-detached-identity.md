@@ -23,6 +23,10 @@ You will need:-
 
 # Steps
 
+## Summary of steps
+- Partition and Format USB memory sticks
+- Get a copy of a GnuPG configuration file
+- Mount the USB memory sticks
 - Create Master signing and certification key and an encryption subkey
 - Add a signing subkey
 - Generate Revocation Certificate
@@ -31,6 +35,43 @@ You will need:-
 - Copy keyrings to "Master" USB stick
 - Remove the private master key from the day-to-day keyring
 - Copy keyrings to "Day-to-day" USB stick
+
+
+## Partition and Format USB memory sticks
+
+[Partition and format][format_usb] 4 USB memory sticks with the FAT32 file
+system for good portability, with labels: `master`, `revcert`, `keys` and
+`unsafe`:
+
+- `master` stores the Master Identity key along with your other secret keys and
+  public keys.  You will keep this very very safe and use it infrequently.
+- `revcert` stores a Revocation Certificate to be used if you lose control of
+  `master`. You will keep this very very safe and physically apart from
+  `master`.
+- `keys` stores your daily-use keyrings, that is, all of the keys from `master`
+  except the Master Identity key. You will keep this very safe, but use it
+  frequently.
+- `unsafe` is for moving data between a secure workstation and an insecure
+  workstation.
+
+[format_usb]: docs/format_usb.md
+
+
+## Get a copy of a GnuPG configuration file
+
+Copy [gpg.conf][gpg_conf] to the `unsafe` USB stick.
+
+[gpg_conf]: conf/gpg.conf
+
+
+## Mount the USB memory sticks
+
+Create four directories under `/media`, corresponding to the labels of the four
+USB memory sticks.
+[Set the proper permissions and mount the USB sticks][mount_usb].
+
+[mount_usb]: docs/mount_usb.md
+
 
 ## Create Master signing and certification key and an encryption subkey
 
