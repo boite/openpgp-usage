@@ -54,14 +54,14 @@ system for good portability, with labels: `master`, `revcert`, `keys` and
 - `unsafe` is for moving data between a secure workstation and an insecure
   workstation.
 
-[format_usb]: docs/format_usb.md
+[format_usb]: format_usb.md
 
 
 ## Get a copy of a GnuPG configuration file
 
 Copy [gpg.conf][gpg_conf] to the `unsafe` USB stick.
 
-[gpg_conf]: conf/gpg.conf
+[gpg_conf]: ../conf/gpg.conf
 
 
 ## Mount the USB memory sticks
@@ -70,7 +70,7 @@ Create four directories under `/media`, corresponding to the labels of the four
 USB memory sticks.
 [Set the proper permissions and mount the USB sticks][mount_usb].
 
-[mount_usb]: docs/mount_usb.md
+[mount_usb]: mount_usb.md
 
 
 ## Create Master signing and certification key and an encryption subkey
