@@ -1,44 +1,47 @@
 # Introduction
 
-It's a good idea to perform the following steps in a LiveCD environment,
-without being connected to a network.  Shutdown the LiveCD when you've
-completed these steps (and before you reconnect to a network).
-
 You will need:-
-- a LiveCD which makes GnuPG >= 1.4.10 available
-- 3 USB sticks (preferably labelled: revcert, master and keys; and which you
-  will mount under `/media` with these labels, i.e. /media/revcert, etc.).
-- to think about a good strong "passphrase" (it should not be a phrase; it
-  should not contain real words or anything like the passwords contained in
-  numerous password dumps) to protect your private keys. It should be something
-  which you will remember (you remember well things from when you were young).
-  As an example, consider:
-  "When I was five, I filled the pencil case belonging to a bully with glue
-  because he made me give him my lunch money. Nobody ever found out that it was
-  me who did it. He cried all afternoon!".
-  Take up to two characters from each word, substitute numbers where it makes
-  sense to do so, use punctuation:
+- a non-networked workstation
+- GnuPG >= 1.4.10 (use the latest version if you possibly can)
+- 4 USB sticks, preferably labelled: revcert; master; keys and unsafe, which
+  you will mount in directories named with the corresponding labels under
+  `/media`, i.e. `/media/revcert`, etc.
+- to think about a good strong "passphrase" to protect your private keyrings
+- a networked workstation (only for obtaining a copy of the GnuPG configuration
+  file)
 
-      WhIwa5,Ifithpecabe2abuwiglbehemamegihimylumo. Noevfoouthitwamewhdiit. Hecralaf!
+There is [some background][background] should you want more information about
+what results from following these instructions.
+
+It's a good idea to perform the following steps in a LiveCD environment so that
+there is no question of any secret key material being stored anywhere other
+than on the USB memory sticks.  A LiveCD with a graphical window system (such
+as any of the Desktop flavours of popular linux distributions) will make it
+easier to use a mouse and keyboard during key generation, so that the system
+can generate sufficient random numbers.  Shut down the LiveCD when you've
+completed these steps and *before* you reconnect to a network.
+
 
 # Steps
 
-## Summary of steps
-
-- Partition and Format USB memory sticks
-- Get a copy of a GnuPG configuration file
-- Mount the USB memory sticks
-- Prepare the `master` USB stick for key generation
+- Prepare USB memory sticks
+  - Partition and Format USB memory sticks
+  - Get a copy of a GnuPG configuration file
+  - Mount the USB memory sticks
+  - Prepare the `master` USB stick for key generation
 - Create Master signing and certification key and an encryption subkey
 - Add a signing subkey
 - Generate Revocation Certificate
 - Copy keyrings to the daily-use USB stick
 - Unmount and remove the `master` and `revcert` USB sticks
 - Remove the private master key from the daily-use keyring
+- Make the exported public key (certificate) available for publishing
 - Remove the backup secret keyring from the daily-use USB stick
 
 
-## Partition and Format USB memory sticks
+## Prepare USB memory sticks
+
+### Partition and Format USB memory sticks
 
 [Partition and format][format_usb] 4 USB memory sticks with the FAT32 file
 system for good portability, with labels: `master`, `revcert`, `keys` and
@@ -55,26 +58,21 @@ system for good portability, with labels: `master`, `revcert`, `keys` and
 - `unsafe` is for moving data between a secure workstation and an insecure
   workstation.
 
-[format_usb]: format_usb.md
 
 
-## Get a copy of a GnuPG configuration file
+### Get a copy of a GnuPG configuration file
 
 Copy [gpg.conf][gpg_conf] to the `unsafe` USB stick.
 
-[gpg_conf]: ../conf/gpg.conf
 
-
-## Mount the USB memory sticks
+### Mount the USB memory sticks
 
 Create four directories under `/media`, corresponding to the labels of the four
 USB memory sticks.
 [Set the proper permissions and mount the USB sticks][mount_usb].
 
-[mount_usb]: mount_usb.md
 
-
-## Prepare the `master` USB stick for key generation
+### Prepare the `master` USB stick for key generation
 
     me@box:~$ cp /media/unsafe/gpg.conf /media/master/
     me@box:~$ echo lock-never >> /media/master/gpg.conf
@@ -302,7 +300,7 @@ steps before doing this step from the beginning.
     ssb   4096R/0xC3897294DD857167 2013-12-14
 
     me@box:~$ gpg --export-secret-subkeys 0xFDB32668D55D0A12! 0xC3897294DD857167! > exported_subkeys
-    me@box:~$ gpg --export 0xF1829BDBB6B64480 > exported_pubkeys
+    me@box:~$ gpg --armor --export 0xF1829BDBB6B64480 > pubcert_F1829BDBB6B64480.asc
     me@box:~$ gpg --delete-secret-key 0xF1829BDBB6B64480
     gpg (GnuPG) 1.4.11; Copyright (C) 2010 Free Software Foundation, Inc.
     This is free software: you are free to change and redistribute it.
@@ -320,7 +318,8 @@ steps before doing this step from the beginning.
     gpg:              unchanged: 1
     gpg:       secret keys read: 1
     gpg:   secret keys imported: 1
-    me@box:~$ gpg --import exported_pubkeys
+    me@box:~$ rm exported_subkeys
+    me@box:~$ gpg --import pubcert_F1829BDBB6B64480.asc
     gpg: key 0xF1829BDBB6B64480: "My Full Name <me@domain.example.com>" not changed
     gpg: Total number processed: 1
     gpg:              unchanged: 1
@@ -340,6 +339,14 @@ master secret key is not actually present in the secret keyring.
     me@box:~$
 
 
+## Make the exported public key (certificate) available for publishing
+
+Having exported an ASCII armoured public key certificate in the previous step,
+you may want to make it available to your correspondents or to the public.
+
+    me@box:~$ mv pubcert_F1829BDBB6B64480.asc /media/unsafe/
+
+
 ## Remove the backup secret keyring from the daily-use USB stick
 
 GnuPG creates backups of the keyrings and the backup of the secret keyring must
@@ -348,6 +355,8 @@ removed from the secret keyring in the previous step. Note the tilde: `~` !
 
     me@box:~$ rm /media/keys/secring.gpg~
 
-At this point you may want to copy `/media/keys/pubring.gpg` to the `unsafe`
-USB stick so that you can plug it into an insecure workstation and publish your
-OpenPGP certificate for the convenience of your correspondents.
+
+[background]: background.md
+[format_usb]: format_usb.md
+[mount_usb]: mount_usb.md
+[gpg_conf]: ../conf/gpg.conf
