@@ -280,8 +280,10 @@ Convoluted process to remove the private master key from the secret keyring
 - export the private subkeys and public key and subkeys
 - delete the private master key
 - import the private subkeys and public key and subkeys
+
 There's an alternative which doesn't bother to export the public keys, but it
 *seems* safer to use the former method than this one:-
+
 - export private subkeys
 - delete the private master key
 - import the private subkeys
