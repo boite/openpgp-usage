@@ -24,17 +24,18 @@ You will need:-
 # Steps
 
 ## Summary of steps
+
 - Partition and Format USB memory sticks
 - Get a copy of a GnuPG configuration file
 - Mount the USB memory sticks
+- Prepare the `master` USB stick for key generation
 - Create Master signing and certification key and an encryption subkey
 - Add a signing subkey
 - Generate Revocation Certificate
-- Copy Revocation Certificate to "Revcert" USB stick
-- Make a backup of the private and public keyrings
-- Copy keyrings to "Master" USB stick
-- Remove the private master key from the day-to-day keyring
-- Copy keyrings to "Day-to-day" USB stick
+- Copy keyrings to the daily-use USB stick
+- Unmount and remove the `master` and `revcert` USB sticks
+- Remove the private master key from the daily-use keyring
+- Remove the backup secret keyring from the daily-use USB stick
 
 
 ## Partition and Format USB memory sticks
@@ -73,6 +74,13 @@ USB memory sticks.
 [mount_usb]: mount_usb.md
 
 
+## Prepare the `master` USB stick for key generation
+
+    me@box:~$ cp /media/unsafe/gpg.conf /media/master/
+    me@box:~$ echo lock-never >> /media/master/gpg.conf
+    me@box:~$ export GNUPGHOME=/media/master
+
+
 ## Create Master signing and certification key and an encryption subkey
 
     me@box:~$ gpg --gen-key
@@ -80,8 +88,8 @@ USB memory sticks.
     This is free software: you are free to change and redistribute it.
     There is NO WARRANTY, to the extent permitted by law.
 
-    gpg: keyring `/home/me/.gnupg/secring.gpg' created
-    gpg: keyring `/home/me/.gnupg/pubring.gpg' created
+    gpg: keyring `/media/master/secring.gpg' created
+    gpg: keyring `/media/master/pubring.gpg' created
     Please select what kind of key you want:
        (1) RSA and RSA (default)
        (2) DSA and Elgamal
@@ -126,7 +134,7 @@ USB memory sticks.
     generator a better chance to gain enough entropy.
     ...+++++
     .....................+++++
-    gpg: /home/me/.gnupg/trustdb.gpg: trustdb created
+    gpg: /media/master/trustdb.gpg: trustdb created
     gpg: key 0xF1829BDBB6B64480 marked as ultimately trusted
     public and secret key created and signed.
 
@@ -210,7 +218,7 @@ master private signing key (our master identity key). Losing control of the
 master private signing key necessarily requires revocation of all its bound
 public keys. This is the purpose of this revocation certificate.
 
-    me@box:~$ gpg -o revcert.asc --gen-revoke 0xF1829BDBB6B64480
+    me@box:~$ gpg -o /media/revcert/revcert_F1829BDBB6B64480.asc --gen-revoke 0xF1829BDBB6B64480
 
     sec  4096R/0xF1829BDBB6B64480 2013-12-14 My Full Name <me@domain.example.com>
 
@@ -244,34 +252,27 @@ public keys. This is the purpose of this revocation certificate.
     me@box:~$
 
 
-## Copy Revocation Certificate to "Revcert" USB stick
+## Copy keyrings to the daily-use USB stick
 
-Assuming a USB stick mounted at `/media/revcert`.
+Copy the keyrings, trust database and GnuPG configuration to `/media/keys`.
 
-    me@box:~$ cp .gnupg/pubring.gpg /media/revcert/
-    me@box:~$ cp .gnupg/secring.gpg /media/revcert/
-
-
-## Make a backup of the private and public keyrings
-
-    me@box:~$ cp .gnupg/pubring.gpg .gnupg/pubring.gpg.backup
-    me@box:~$ cp .gnupg/secring.gpg .gnupg/secring.gpg.backup
+    me@box:~$ cp /media/master/pubring.gpg /media/keys/
+    me@box:~$ cp /media/master/secring.gpg /media/keys/
+    me@box:~$ cp /media/master/trustdb.gpg /media/keys/
+    me@box:~$ cp /media/master/gpg.conf /media/keys/
 
 
-## Copy keyrings to "Master" USB stick
+## Unmount and remove the `master` and `revcert` USB sticks
 
-Assuming a USB stick mounted at `/media/master`.
+The `master` USB stick now contains your public and private keys, including the
+Master Identity key.  Both the `master` and `revcert` USB sticks can be removed
+and squirrelled safely away.
 
-    me@box:~$ cp .gnupg/pubring.gpg /media/master/
-    me@box:~$ cp .gnupg/secring.gpg /media/master/
-
-Copy `gpg.conf` also.  Append `lock-never` to the configuration.
-
-    me@box:~$ cp .gnupg/gpg.conf /media/master/
-    me@box:~$ echo lock-never >> /media/master/gpg.conf
+    me@box:~$ sudo umount /media/master
+    me@box:~$ sudo umount /media/revcert
 
 
-## Remove the private master key from the day-to-day keyring
+## Remove the private master key from the daily-use keyring
 
 Convoluted process to remove the private master key from the secret keyring
 (`secring.gpg`):-
@@ -285,10 +286,13 @@ There's an alternative which doesn't bother to export the public keys, but it
 - delete the private master key
 - import the private subkeys
 
-.
+If you should encounter any problems with this step you can delete everything
+on the daily-use keyring, mount `master` again and repeat the previous two
+steps before doing this step from the beginning.
 
+    me@box:~$ export GNUPGHOME=/media/keys
     me@box:~$ gpg --list-secret-keys
-    /home/me/.gnupg/secring.gpg
+    /media/keys/secring.gpg
     --------------------------------
     sec   4096R/0xF1829BDBB6B64480 2013-12-14 [expires: 2013-12-13]
     uid                            My Full Name <me@domain.example.com>
@@ -324,7 +328,7 @@ Now, when you `--list-secret-keys`, you should see `sec#` to denote that the
 master secret key is not actually present in the secret keyring.
 
     me@box:~$ gpg --list-secret-keys
-    /home/me/.gnupg/secring.gpg
+    /media/keys/secring.gpg
     --------------------------------
     sec#  4096R/0xF1829BDBB6B64480 2013-12-14 [expires: 2013-12-13]
     uid                            My Full Name <me@domain.example.com>
@@ -334,14 +338,14 @@ master secret key is not actually present in the secret keyring.
     me@box:~$
 
 
-## Copy keyrings "Day-to-day" to USB stick
+## Remove the backup secret keyring from the daily-use USB stick
 
-Assuming a USB stick mounted at `/media/keys`.
+GnuPG creates backups of the keyrings and the backup of the secret keyring must
+be removed since it currently contains the master identity key which was
+removed from the secret keyring in the previous step. Note the tilde: `~` !
 
-    me@box:~$ cp .gnupg/pubring.gpg /media/keys/
-    me@box:~$ cp .gnupg/secring.gpg /media/keys/
+    me@box:~$ rm /media/keys/secring.gpg~
 
-Copy `gpg.conf` also.  Append `lock-never` to the configuration.
-
-    me@box:~$ cp .gnupg/gpg.conf /media/keys/
-    me@box:~$ echo lock-never >> /media/keys/gpg.conf
+At this point you may want to copy `/media/keys/pubring.gpg` to the `unsafe`
+USB stick so that you can plug it into an insecure workstation and publish your
+OpenPGP certificate for the convenience of your correspondents.
