@@ -1,0 +1,22 @@
+Vagrant.configure("2") do |config|
+
+  # change user as appropriate
+  #
+  user = "vagrant"
+
+  # change the box name and url as appropriate, for example, to use a box that
+  # already exists in your vagrant setup:-
+  #
+  # config.vm.box = "some_box_name"
+  # # config.vm.box_url is not required
+  #
+  config.vm.box = "saucy32_server"
+  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-i386-vagrant-disk1.box"
+
+  # share the host folder named "shared" with the guest
+  config.vm.synced_folder "shared", "/home/" + user + "/host_share"
+
+  # Provision with a shell script
+  config.vm.provision :shell, :path => "init.sh"
+
+end

@@ -15,6 +15,8 @@ Then there are guides for the individual operations, notably:-
 
 - [Generate a set of OpenPGP keys][genkey-with-detached-identity], including a
   detached Master Identity key.
+- Refresh the public keys of correspondents over Tor using
+  [Parcimonie on Windows][parcimonie-vbguest]
 - ...
 
 There is also a [sample configuration file for GnuPG][gpg-conf] which you may
@@ -24,7 +26,7 @@ wish to use in place of the default configuration.
 [background]: docs/background.md
 [genkey-with-detached-identity]: docs/genkey-with-detached-identity.md
 [gpg-conf]: conf/gpg.conf
-
+[parcimonie-vbguest]: vm/parcimonie/
 
 ## Bibliography
 
