@@ -26,8 +26,8 @@ Synchronising Key Servers (SKS) in the `hkps.pool.sks-keyservers.net` pool:-
     me@box:~$ gpg --verify .gnupg/sks-keyservers.netCA.pem{.asc,}
 
 Go no further and find out what went wrong if the signature on the .pem file
-isn't a good one or wasn't made by Kristian Fiskerstrand
-<kristian.fiskerstrand@sumptuouscapital.com> using the key you've just
+isn't a good one or wasn't made by `Kristian Fiskerstrand
+<kristian.fiskerstrand@sumptuouscapital.com>` using the key you've just
 imported.
 
 If the certificate is OK then it's time to see if Parcimonie works:-
