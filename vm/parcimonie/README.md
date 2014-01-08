@@ -16,14 +16,21 @@ Method:-
 - Issue `vagrant up`; this will start by downloading a (>320MB) virtual machine
   image from the web
 - SSH into the guest (username `vagrant` and password `vagrant`, or use the
-  [ssh key][vagrant_ssh_key]) and perform the following:-
+  [ssh key][vagrant_ssh_key]) and finalise the set-up by performing the small
+  number of tasks, below
+
+Verify the integrity of the Certificate Authority file used by the
+Synchronising Key Servers (SKS) in the `hkps.pool.sks-keyservers.net` pool:-
 
     me@box:~$ gpg --keyserver pool.sks-keyservers.net --recv-keys 0x94CBAFDD30345109561835AA0B7F8B60E3EDFAE3
     me@box:~$ gpg --verify .gnupg/sks-keyservers.netCA.pem{.asc,}
 
-Go no further if the signature on the .pem file isn't a good one or wasn't made
-by Kristian Fiskerstrand <kristian.fiskerstrand@sumptuouscapital.com> using the
-key you've just imported - find out what went wrong. Otherwise do:-
+Go no further and find out what went wrong if the signature on the .pem file
+isn't a good one or wasn't made by Kristian Fiskerstrand
+<kristian.fiskerstrand@sumptuouscapital.com> using the key you've just
+imported.
+
+If the certificate is OK then it's time to see if Parcimonie works:-
 
     me@box:~$ DISPLAY=":0" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/dbus/system_bus_socket" parcimonie --verbose
 
@@ -62,15 +69,20 @@ You should see something like:-
     gpg:              unchanged: 1
     Will now sleep 1124284 seconds.
 
-If all went well then stop parcimonie with `Ctrl+C` and prepare the GnuPG
-public keyring on this machine with just the keys you want to be refreshed:-
+If that went well then stop parcimonie with `Ctrl+C` and export the public keys
+from your keyring on the host machine:-
 
     C:\path\to\shared> gpg --armor --output pub.export.asc --export
+
+Import them into the keyring on the guest machine and, should you need to,
+remove any keys which you don't want to be refreshed:-
+
     me@box:~$ gpg --import $HOME/host_share/pub.export.asc
     me@box:~$ rm $HOME/host_share/pub.export.asc
-    me@box:~$ gpg --batch --yes --delete-key 0x<long_key_id_of_your_own_key> ...
+    me@box:~$ gpg --batch --yes --delete-key 0x<long_key_id_to_remove> 0x<...>
 
-Finally, install a handy crontab and start parcimonie:-
+Finally, install a crontab containing some useful cron jobs and start
+parcimonie:-
 
     me@box:~$ crontab $HOME/host_share/new_crontab
     me@box:~$ ./parcimonie/start_parcimonie.sh
