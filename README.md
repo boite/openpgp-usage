@@ -17,6 +17,7 @@ Then there are guides for the individual operations, notably:-
   detached Master Identity key.
 - [Certify the identity][sign_key] of a correspondent.
 - [Sign and encrypt a message][sign_encrypt] to a correspondent
+- [Decrypt and verify a message][decrypt_verify] from a correspondent
 - Refresh the public keys of correspondents over Tor using
   [Parcimonie on Windows][parcimonie-vbguest]
 - ...
@@ -64,5 +65,6 @@ This guide builds on the work of many other people:-
 [genkey-with-detached-identity]: docs/genkey-with-detached-identity.md
 [sign_key]:           docs/sign_key.md
 [sign_encrypt]:       docs/sign_encrypt.md
+[decrypt_verify]:     docs/decrypt_verify.md
 [parcimonie-vbguest]: vm/parcimonie/
 [gpg-conf]:           conf/gpg.conf
