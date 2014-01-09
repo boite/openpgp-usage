@@ -40,7 +40,10 @@ memory sticks.
     Life goes on, right or wrong
     Now the sun is dead and gone. Dear John.
 
-Hit `Ctrl+D` when you've finished typing your message, et voilà!
+Hit `Ctrl+D` when you've finished typing your message, et voilà!  The contents
+of the resulting ASCII armoured file can be pasted directly into the body of a
+plain-text email message (e.g. in a Mozilla Thunderbird message compose window,
+select Options > Delivery Format > Plain Text Only).
 
 Alternatively you can encrypt a file:-
 
