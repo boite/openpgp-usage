@@ -15,6 +15,8 @@ Then there are guides for the individual operations, notably:-
 
 - [Generate a set of OpenPGP keys][genkey-with-detached-identity], including a
   detached Master Identity key.
+- [Certify the identity][sign_key] of a correspondent.
+- [Sign and encrypt a message][sign_encrypt] to a correspondent
 - Refresh the public keys of correspondents over Tor using
   [Parcimonie on Windows][parcimonie-vbguest]
 - ...
@@ -22,11 +24,6 @@ Then there are guides for the individual operations, notably:-
 There is also a [sample configuration file for GnuPG][gpg-conf] which you may
 wish to use in place of the default configuration.
 
-
-[background]: docs/background.md
-[genkey-with-detached-identity]: docs/genkey-with-detached-identity.md
-[gpg-conf]: conf/gpg.conf
-[parcimonie-vbguest]: vm/parcimonie/
 
 ## Bibliography
 
@@ -61,3 +58,11 @@ This guide builds on the work of many other people:-
 - https://wiki.openstack.org/wiki/OpenPGP_Web_of_Trust OpenPGP Web of Trust
 - http://www.phillylinux.org/keys/terminal.html Keysigning with the GNU/Linux
   Terminal
+
+
+[background]:         docs/background.md
+[genkey-with-detached-identity]: docs/genkey-with-detached-identity.md
+[sign_key]:           docs/sign_key.md
+[sign_encrypt]:       docs/sign_encrypt.md
+[parcimonie-vbguest]: vm/parcimonie/
+[gpg-conf]:           conf/gpg.conf
