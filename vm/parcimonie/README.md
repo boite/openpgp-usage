@@ -96,6 +96,14 @@ public keys to `~/host_share/pub.updates.asc`. Thus you can import refreshed
 keys into a keyring on your host machine by doing:-
 
     C:\path\to\shared> gpg --import pub.updates.asc 2>& 1 > NUL | find /V "not changed"
+    gpg: key 0x0B7F8B60E3EDFAE3: "Kristian Fiskerstrand <kristian.fiskerstrand@sumptuouscapital.com>" 2 new signatures
+    gpg: Total number processed: 37
+    gpg:              unchanged: 36
+    gpg:         new signatures: 2
+    gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+    gpg: depth: 0  valid:   4  signed:   1  trust: 0-, 0q, 0n, 0m, 0f, 4u
+    gpg: depth: 1  valid:   1  signed:   0  trust: 1-, 0q, 0n, 0m, 0f, 0u
+    gpg: next trustdb check due at 2015-09-27
 
 and when you have a newly acquired public key needing to be refreshed by
 parcimonie:-
